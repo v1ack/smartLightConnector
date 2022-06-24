@@ -6,7 +6,7 @@ For using you need to install and connect GM Smart Light http://le-iot.com/downl
 
 Then go to Settings and copy `Current ID (mode)` to `MAC` in app.py
 
-![](.github/screen1.png) ![](.github/screen2.png)
+![](.github/screen.png)
 
 ## Example:
 
