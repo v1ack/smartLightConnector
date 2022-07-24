@@ -47,10 +47,7 @@ def checksum(data: List[int]) -> int:
 def encode(salt: int, data: List[int]) -> [int]:
     res = [0] * len(data)
     for i in range(len(data)):
-        if i < 10:
-            res[i] = data[i]
-        else:
-            res[i] = b(data[i] ^ ABC[salt & 15])
+        res[i] = data[i] if i < 10 else b(data[i] ^ ABC[salt & 15])
     return res
 
 
@@ -62,8 +59,19 @@ class Command:
 
 @dataclass
 class Message:
-    manufacturer_id: int
-    manufacturer_data: bytearray
+    data: List[int]
+
+    @property
+    def hex_data(self) -> bytearray:
+        return int_list_to_hex(self.data)
+
+    @property
+    def manufacturer_id(self) -> int:
+        return (self.data[0] & 255) + ((self.data[1] & 255) * 256)
+
+    @property
+    def manufacturer_data(self) -> bytearray:
+        return int_list_to_hex(self.data[2:])
 
 
 class Encryptor:
@@ -75,14 +83,7 @@ class Encryptor:
 
     def message(self, command: Command):
         data = self._message(command.command, command.value)
-        return Message(
-            manufacturer_id=self.manufacturer_id(data[0], data[1]),
-            manufacturer_data=int_list_to_hex(data[2:]),
-        )
-
-    @staticmethod
-    def manufacturer_id(byte, byte2):
-        return (byte & 255) + ((byte2 & 255) * 256)
+        return Message(data=data)
 
     def _message(self, command: int, message: List[int], group_id: int = 0):
         self.messageId += 1
