@@ -1,4 +1,4 @@
 bluezero==0.6.0
-bleson
+bleson~=0.1.8
 black
 bless==0.2.4

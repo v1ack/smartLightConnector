@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  ble_light:
+    build: .
+    ports:
+      - "8080:8000"
+    volumes:
+      - "/run/dbus/system_bus_socket:/run/dbus/system_bus_socket"
+      - "./ble_light:/app/ble_light"
+    environment:
+      MAC: <YOUR_MAC_FROM_APP>

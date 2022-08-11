@@ -8,6 +8,10 @@ class BtBackend:
     def send_message(self, message: Message):
         pass
 
+    @abstractmethod
+    def close(self):
+        pass
+
 
 class App:
     def __init__(self, mac: str, backend: BtBackend):
@@ -30,3 +34,9 @@ class App:
         # Send commands twice
         self.backend.send_message(self._make_message(command))
         self.backend.send_message(self._make_message(command))
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.backend.close()

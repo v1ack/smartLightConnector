@@ -1,4 +1,6 @@
-# Smart light app for GM Smart Light
+# Smart light app for GM Smart Light + Home assistant integration
+
+[home assisant integration](./hass_integration/README.md)
 
 Algorithm decompiled from Android app `GM Smart Light v0.0.3` (com.hm.simpleble)
 
