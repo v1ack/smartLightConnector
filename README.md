@@ -26,6 +26,20 @@ app.send(Commands.bright(1000))  # brightness 0-1000
 app.send(Commands.temp(3000))  # temperature 3000-6400
 ```
 
+## Requirements:
+
+- linux OS with blueZ
+- for bless backend
+  - dbus-next
+  - bless
+- for bluezero backend
+  - python-dbus
+  - bluezero
+  - a lot of system libs like in ./Dockerfile
+
+Tested with provided Dockerfile on Debian 11 host with blueZ 5.55
+
+
 ## How does it work?
 
 Lamp accepts commands by listening ble advertisement packets.

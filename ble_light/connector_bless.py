@@ -1,64 +1,63 @@
 import asyncio
-from asyncio import sleep
+from asyncio import sleep, Lock
+from logging import getLogger
 
 from bless import BlessServer
 from bless.backends.bluezdbus.dbus.advertisement import BlueZLEAdvertisement, Type
 from bless.backends.bluezdbus.server import BlessServerBlueZDBus
 from dbus_next import Variant
-from dbus_next.service import dbus_property
 
 from ble_light.connector import BtBackend
 from ble_light.encoder import Message
 
-
-class FixedAdv(BlueZLEAdvertisement):
-    @dbus_property()
-    def TxPower(self) -> "n":  # type: ignore # noqa: F821
-        return self._tx_power
-
-    @TxPower.setter  # type: ignore
-    def TxPower(self, dbm: "n"):  # type: ignore # noqa: F821
-        self._tx_power = dbm
+logger = getLogger(__name__)
 
 
 class BlessServer(BlessServerBlueZDBus):
+    async def setup(self):
+        await super().setup()
+        self.adv = BlueZLEAdvertisement(Type.BROADCAST, 1, self.app)
+        self.adv._tx_power = -15
+
+        self.app.advertisements = [self.adv]
+        self.bus.export(self.adv.path, self.adv)
+
+        self.iface = self.adapter.get_interface("org.bluez.LEAdvertisingManager1")
+        # await self.iface.call_register_advertisement(self.app.path, {})
+
     async def send_message(self, message: Message, timeout=0.5):
         # start advertising
         await self.app.set_name(self.adapter, self.name)
-        advertisement = FixedAdv(Type.BROADCAST, 1, self.app)
 
         # ManufacturerData = {UINT16: Variant}
-        advertisement.ManufacturerData = {
-            message.manufacturer_id: Variant("au", list(message.manufacturer_data))
+        self.adv.ManufacturerData = {
+            message.manufacturer_id: Variant("ay", bytes(message.manufacturer_data))
         }
-        advertisement._tx_power = -23
-        self.app.advertisements = [advertisement]
-
-        self.bus.export(advertisement.path, advertisement)
-
-        iface = self.adapter.get_interface("org.bluez.LEAdvertisingManager1")
-        await iface.call_register_advertisement(advertisement.path, {})  # type: ignore
+        logger.debug("registering advertisement")
+        await self.iface.call_register_advertisement(self.adv.path, {})  # type: ignore
+        logger.debug("advertising")
 
         # await
         await sleep(timeout)
 
         # stop advertising
         await self.app.set_name(self.adapter, "")
-        advertisement: BlueZLEAdvertisement = self.app.advertisements.pop()
-        iface = self.adapter.get_interface("org.bluez.LEAdvertisingManager1")
-        await iface.call_unregister_advertisement(advertisement.path)  # type: ignore
+        logger.debug("unregistering advertisement")
+        await self.iface.call_unregister_advertisement(self.adv.path)  # type: ignore
+        logger.debug("unadvertising")
 
 
 class BlessBackend(BtBackend):
     def __init__(self):
-        raise NotImplementedError()
         self.loop = asyncio.get_event_loop()
-        self.server = BlessServer(name="my_service_name", loop=self.loop)
+        self.server = BlessServer(name="ble_lelight", loop=self.loop)
+        self.lock = Lock()
 
     async def _send_message(self, message: Message):
         await self.server.setup_task
-        for _ in range(2):
-            await self.server.send_message(message, timeout=0.5)
+        async with self.lock:
+            for _ in range(2):
+                await self.server.send_message(message, timeout=0.25)
 
     def send_message(self, message: Message):
-        self.loop.run_until_complete(self._send_message(message))
+        self.loop.create_task(self._send_message(message))

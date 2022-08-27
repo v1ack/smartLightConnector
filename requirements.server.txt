@@ -4,3 +4,5 @@ uvicorn~=0.18.2
 dbus-python
 pycairo
 PyGObject
+dbus-next
+bless

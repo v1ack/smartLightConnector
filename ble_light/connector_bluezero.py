@@ -33,7 +33,7 @@ class LeBeacon(Beacon):
 
         thread = Thread(target=self.broadcaster.start)
         thread.start()
-        time.sleep(0.1)
+        time.sleep(0.2)
 
         self.broadcaster.stop()
         ad_manager.unregister_advertisement(self.broadcaster)

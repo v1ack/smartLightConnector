@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 
 from ble_light.connector import App
-from ble_light.connector_bluezero import BluezeroBackend
+from ble_light.connector_bless import BlessBackend
 from ble_light.encoder import Commands
 
 
@@ -40,11 +40,15 @@ app = FastAPI()
 
 mac = getenv("MAC")
 print(f'"{mac}"')
-le_app = ProxyApp(app=App(mac, BluezeroBackend()))
+le_app = ProxyApp(app=App(mac, BlessBackend()))
 
 
 @app.post("/lamp")
 async def update_item(command: str, value: Optional[int] = None):
+    if command == "turn_on" and le_app.is_on:
+        return {"status": "already on"}
+    elif command == "turn_off" and not le_app.is_on:
+        return {"status": "already off"}
     try:
         le_app.send(command, value)
     except AttributeError:
