@@ -2,6 +2,10 @@
 
 [home assisant integration](./hass_integration/README.md)
 
+Tested with IRALAN Lamp [aliexpress link](https://aliexpress.ru/item/1005001971981212.html)
+
+![](.github/lamp.jpg)
+
 Algorithm decompiled from Android app `GM Smart Light v0.0.3` (com.hm.simpleble)
 
 For using you need to install and connect GM Smart Light http://le-iot.com/download/simble_gm_downshow.html
