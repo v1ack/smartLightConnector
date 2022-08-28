@@ -23,7 +23,6 @@ class BlessServer(BlessServerBlueZDBus):
         self.bus.export(self.adv.path, self.adv)
 
         self.iface = self.adapter.get_interface("org.bluez.LEAdvertisingManager1")
-        # await self.iface.call_register_advertisement(self.app.path, {})
 
     async def send_message(self, message: Message, timeout=0.5):
         # start advertising

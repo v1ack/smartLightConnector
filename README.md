@@ -1,19 +1,18 @@
-# Light control app + Home assistant integration
+# Light control app
 
-[home assisant integration](./hass_integration/README.md)
+### [home assisant integration](https://github.com/v1ack/ha-lelight)
 
 There are at least 3 apps with the same light control
 
-|         **Icon**          |         **Name**          |
-|:-------------------------:|:-------------------------:|
-| ![](.github/gm_light.jpg) |      GM Smart Light       |
-| ![](.github/lelight.jpg)  |         Le Light          |
-|   ![](.github/le+.jpg)    | Le+ Pro (simple ble mode) |
+|         **Icon**          |         **Name**          |     **package**      |
+|:-------------------------:|:-------------------------:|:--------------------:|
+| ![](.github/gm_light.jpg) |      GM Smart Light       |   com.hm.simpleble   |
+| ![](.github/lelight.jpg)  |      Le Smart Light       | cn.lelight.smart.lzg |
+|   ![](.github/le+.jpg)    | Le+ Pro (simple ble mode) |   com.lelight.pro    |
 
 If your lamp works with any of the above apps, you can use this app too
 
-Algorithm decompiled from Android app `GM Smart Light v0.0.3` (
-com.hm.simpleble) [download link](http://le-iot.com/download/simble_gm_downshow.html)
+Algorithm decompiled from Android app `GM Smart Light v0.0.3`[download link](http://le-iot.com/download/simble_gm_downshow.html)
 
 You need to find `Current ID (mode)` in app settings and copy it to `MAC` in app.py
 
