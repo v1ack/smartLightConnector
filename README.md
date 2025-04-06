@@ -2,6 +2,7 @@
 
 ### [home assisant integration](https://github.com/v1ack/ha-lelight)
 
+
 There are at least 3 apps with the same light control
 
 |         **Icon**          |         **Name**          |     **package**      |
@@ -12,7 +13,7 @@ There are at least 3 apps with the same light control
 
 If your lamp works with any of the above apps, you can use this app too
 
-Algorithm decompiled from Android app `GM Smart Light v0.0.3`[download link](http://le-iot.com/download/simble_gm_downshow.html)
+Algorithm decompiled from Android app `GM Smart Light v0.0.3`[download link](http://le-iot.com/download/simble_gm_downshow.html) [(copy)](.github/GM_Smart_Light_0.0.3.apk)
 
 You need to find `Current ID (mode)` in app settings and copy it to `MAC` in app.py
 
